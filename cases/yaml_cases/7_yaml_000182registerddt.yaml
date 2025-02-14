@@ -1,0 +1,31 @@
+desc: 注册失败
+steps:
+- 发送Post请求:
+    关键字: send_HTTP_request
+    URL: http://shop-xo.hctestedu.com
+    PARAMS:
+      s: /api/user/reg
+      application: app
+    DATA:
+      accounts: "{{username}}"
+      pwd: "{{password}}"
+      type: username
+- 通过JSONPATH提取数据-MSG:
+     关键字: extend_json_data_by_jsonpath
+     EXVALUE: $..msg
+     INDEX: 0
+     VARNAME: msg_success
+- 断言-文本断言-等于:
+    关键字: assert_text_comparators
+    VALUE: "{{msg_success}}"
+    EXPECTED: "{{expected}}"
+    OP_STR: ==
+ddts:
+-  username: hami
+   password: '123456'
+   expected: '账号已存在'
+   desc: "重复注册测试"
+-  username: ''
+   password: '123456'
+   expected: '账号不能为空'
+   desc: "注册名为空测试"

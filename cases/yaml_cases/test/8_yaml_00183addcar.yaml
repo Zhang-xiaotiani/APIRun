@@ -1,0 +1,55 @@
+desc: 加入购物车测试
+steps:
+  - 发送Post请求:
+      关键字: send_HTTP_request
+      URL: "{{url}}"
+      PARAMS:
+        s: api/cart/save
+        application: app
+        token: "{{token}}"
+      DATA:
+        goods_id: "{{goods_id}}"
+        spec:
+          - type: 套餐
+            value: 套餐二
+          - type: 颜色
+            value: 银色
+          - type: 容量
+            value: 64G
+        stock: "{{stock}}"
+  - 通过JSONPATH提取数据-MSG:
+      关键字: extend_json_data_by_jsonpath
+      EXVALUE: $..msg
+      INDEX: 0
+      VARNAME: msg_success
+
+  - 断言-文本断言-等于:
+      关键字: assert_text_comparators
+      VALUE: "{{msg_success}}"
+      EXPECTED: "{{expected}}"
+      OP_STR: ==
+
+  - 断言-全量断言-等于:
+      关键字: assert_json_DeepDiff
+      json1: { "name": "hami","age": 18 }
+      json2: { "name": "hami","age": 18 }
+
+  - 断言-全量断言-过滤字段:
+      关键字: assert_json_DeepDiff
+      json1: { "name": "hami","age": 18 , "city": 长沙 }
+      json2: { "name": "hami","age": 18 }
+      过滤字段: { city }
+  - 断言-全量断言-不等于:
+      关键字: assert_json_DeepDiff
+      json1: [ 1,2,3 ]
+      json2: [ 1,3,2 ]
+      忽略顺序: True
+ddts:
+  - goods_id: '100'
+    stock: '2'
+    expected: '加入成功'
+    desc: "新增商品100"
+  - goods_id: ''
+    stock: '2'
+    expected: '商品编号不能为空'
+    desc: "新增商品为空"

@@ -1,0 +1,32 @@
+desc: 注册成功-数据库断言
+steps:
+  - 发送Post请求:
+      关键字: send_HTTP_request
+      URL: http://shop-xo.hctestedu.com
+      PARAMS:
+        s: /api/user/reg
+        application: app
+      DATA:
+        accounts: "{{account}}"
+        pwd: 123456
+        type: username
+  - 通过JSONPATH提取数据-MSG:
+      关键字: extend_json_data_by_jsonpath
+      EXVALUE: $..msg
+      INDEX: 0
+      VARNAME: msg_success
+  - 断言-文本断言-等于:
+      关键字: assert_text_comparators
+      VALUE: "{{msg_success}}"
+      EXPECTED: 注册成功
+      OP_STR: ==
+  - 提取MySQL的数据:
+      关键字: ex_mysqlData
+      数据库: mysql001
+      SQL: 'SELECT id,username  FROM sxo_user WHERE username  = "{{account}}"'
+      引用变量: id,username
+  - 断言-文本断言-等于用户ID:
+      关键字: assert_text_comparators
+      VALUE: "{{username_1}}"
+      EXPECTED: "{{account}}"
+      OP_STR: ==
