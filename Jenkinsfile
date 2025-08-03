@@ -9,7 +9,7 @@ pipeline {
         REPORT_DIR = "${env.WORKSPACE_BASE}/report"
         LOG_DIR = "${env.WORKSPACE_BASE}/logs"
         TEMP_DIR = "${env.WORKSPACE_BASE}/temp"
-        GIT_URL = 'https://your.git.repo/repo.git'
+        GIT_URL = 'https://github.com/Zhang-xiaotiani/APIRun.git'
         // 获取当前时间戳（格式：202508012239）
         TIMESTAMP = """${new Date().format('yyyyMMddHHmm')}"""
     }
